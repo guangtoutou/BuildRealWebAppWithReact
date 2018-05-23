@@ -14,18 +14,23 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Date;
 
 @EnableWebSecurity
-public class AppSecurity extends WebSecurityConfigurerAdapter{
+public class AppSecurity extends WebSecurityConfigurerAdapter {
 	@Value("${app.jwtSecret}")
 	private String jwtSecret;
 
@@ -47,6 +52,7 @@ public class AppSecurity extends WebSecurityConfigurerAdapter{
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
+
 	public AppSecurity(CustomUserDetailService customUserDetailService) {
 		this.customUserDetailService = customUserDetailService;
 	}
@@ -65,11 +71,12 @@ public class AppSecurity extends WebSecurityConfigurerAdapter{
 				.anyRequest().authenticated()
 				.and()
 				.formLogin()
-				.successHandler(this::loginSuccessHandler);
+				.successHandler(this::loginSuccessHandler).failureHandler(this::loginFailureHandler);
 
 		http.
 				addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 	}
+
 
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -78,7 +85,14 @@ public class AppSecurity extends WebSecurityConfigurerAdapter{
 				.withUser("user").password("password").roles("USER").and()
 				.withUser("admin").password("password").roles("USER", "ADMIN");
 
-		auth.userDetailsService(customUserDetailService).passwordEncoder( passwordEncoder());
+		auth.userDetailsService(customUserDetailService).passwordEncoder(passwordEncoder());
+	}
+
+	@Bean
+	CorsConfigurationSource corsConfigurationSource() {
+		final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		source.registerCorsConfiguration("/**", new CorsConfiguration().applyPermitDefaultValues());
+		return source;
 	}
 
 	//Generate a JWT after successful login
@@ -98,6 +112,16 @@ public class AppSecurity extends WebSecurityConfigurerAdapter{
 				.compact();
 
 		response.setStatus(HttpStatus.OK.value());
-		response.setHeader("accessToken", compactJws);
+		response.setHeader("Authorization", compactJws);
+		response.setHeader("Access-Control-Expose-Headers", "Authorization");
+	}
+
+	//Send error message after login failure
+	private void loginFailureHandler(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			AuthenticationException e) throws IOException {
+		response.setStatus(HttpStatus.UNAUTHORIZED.value());
+		response.getWriter().write("Invalid user");
 	}
 }
