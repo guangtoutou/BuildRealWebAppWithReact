@@ -12,8 +12,7 @@ export const userSignup = user => ({
 });
 
 export const userLogout = () => ({
-  type: USER_LOGOUT,
-  user: {}
+  type: USER_LOGOUT
 });
 
 export const login = credentials => dispatch =>

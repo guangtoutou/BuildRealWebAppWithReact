@@ -7,7 +7,7 @@ export default function user(state = {}, action = {}) {
     case USER_SIGNUP:
       return action.user;
     case USER_LOGOUT:
-      return action.user;
+      return {};
     default:
       return state;
   }

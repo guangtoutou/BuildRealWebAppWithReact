@@ -4,6 +4,7 @@ import Dashboard from './Dashboard';
 import { connect } from 'react-redux';
 import { logout } from '../../actions/auth';
 import { Button } from 'semantic-ui-react';
+import PropTypes from 'prop-types';
 
 class HomePage extends React.Component {
   logout = () => this.props.logout();
@@ -20,9 +21,12 @@ class HomePage extends React.Component {
       );
     } else {
       return (
-        <Button primary onClick={this.logout}>
-          Logout
-        </Button>
+        <div>
+          <h1>Home Page</h1>
+          <Button primary onClick={this.logout}>
+            Logout
+          </Button>
+        </div>
       );
     }
   }
@@ -33,5 +37,10 @@ function mapStateToProp(state) {
     isAuthenticated: !!state.user.isAuthenticated
   };
 }
+
+HomePage.propTypes = {
+  isAuthenticated: PropTypes.bool,
+  logout: PropTypes.func
+};
 
 export default connect(mapStateToProp, { logout })(HomePage);

@@ -9,6 +9,7 @@ import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import rootReducer from './rootReducer';
 import { composeWithDevTools } from 'redux-devtools-extension';
+import { userLoggedIn } from './actions/auth';
 
 const store = createStore(
   rootReducer,
@@ -17,6 +18,14 @@ const store = createStore(
     // other store enhancers if any
   )
 );
+
+if (localStorage.bookwormJWT) {
+  var user = {
+    isAuthenticated: true,
+    token: localStorage.bookwormJWT
+  };
+  store.dispatch(userLoggedIn(user));
+}
 
 ReactDOM.render(
   <BrowserRouter>
