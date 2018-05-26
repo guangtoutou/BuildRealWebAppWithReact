@@ -39,8 +39,8 @@ function mapStateToProp(state) {
 }
 
 HomePage.propTypes = {
-  isAuthenticated: PropTypes.bool,
-  logout: PropTypes.func
+  isAuthenticated: PropTypes.bool.isRequired,
+  logout: PropTypes.func.isRequired
 };
 
 export default connect(mapStateToProp, { logout })(HomePage);

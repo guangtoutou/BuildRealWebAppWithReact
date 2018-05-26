@@ -2,6 +2,7 @@ package com.nilab.bookworm.api.config;
 
 import com.nilab.bookworm.api.security.CustomUserDetailService;
 import com.nilab.bookworm.api.security.JwtAuthenticationFilter;
+import com.nilab.bookworm.api.security.TokenProvider;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,11 +32,8 @@ import java.util.Date;
 
 @EnableWebSecurity
 public class AppSecurity extends WebSecurityConfigurerAdapter {
-	@Value("${app.jwtSecret}")
-	private String jwtSecret;
-
-	@Value("${app.jwtExpirationInMs}")
-	private int jwtExpirationInMs;
+	@Autowired
+	private TokenProvider tokenProvider;
 
 	@Autowired
 	private AuthenticationEntryPoint unAuthorizedHandler;
@@ -101,18 +99,11 @@ public class AppSecurity extends WebSecurityConfigurerAdapter {
 			HttpServletResponse response,
 			Authentication authentication) throws IOException {
 
-		Date now = new Date();
-		Date expiryDate = new Date(now.getTime() + jwtExpirationInMs);
 
-		String compactJws = Jwts.builder()
-				.claim("user", authentication.getPrincipal())
-				.setIssuedAt(new Date())
-				.setExpiration(expiryDate)
-				.signWith(SignatureAlgorithm.HS512, jwtSecret)
-				.compact();
+		String token = tokenProvider.generateToken(authentication.getPrincipal());
 
 		response.setStatus(HttpStatus.OK.value());
-		response.setHeader("Authorization", compactJws);
+		response.setHeader("Authorization", token);
 		response.setHeader("Access-Control-Expose-Headers", "Authorization");
 	}
 
