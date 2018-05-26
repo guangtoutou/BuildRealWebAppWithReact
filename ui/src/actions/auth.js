@@ -23,8 +23,10 @@ export const login = credentials => dispatch =>
   });
 
 export const signup = userForm => dispatch =>
-  api.user.signup(userForm).then(user => {
-    //localStorage.bookwormJWT = user.token;
+  api.user.signup(userForm).then(res => {
+    var token = res.headers.authorization;
+    localStorage.bookwormJWT = token;
+    var user = { token, isAuthenticated: true };
     dispatch(userSignup(user));
   });
 

@@ -19,6 +19,6 @@ export default {
         .post('/login', form_data)
         .then(res => res.headers.authorization);
     },
-    signup: userForm => axios.post('/signup', userForm).then(res => res.data)
+    signup: userForm => axios.post('/signup', userForm).then(res => res)
   }
 };
