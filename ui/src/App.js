@@ -4,12 +4,16 @@ import HomePage from './components/pages/HomePage';
 import LoginPage from './components/pages/LoginPage';
 import SignupPage from './components/pages/SignupPage';
 import Dashboard from './components/pages/Dashboard';
+import TopNavigation from './components/navigation/TopNavigation';
 import UserRoute from './components/routes/UserRoute';
 import GuestRoute from './components/routes/GuestRoute';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
-const App = ({ location }) => (
+const App = ({ location, isAuthenticated }) => (
   <div className="ui container">
-    <Route location={location} path="/" exact component={HomePage} />
+    {isAuthenticated && <TopNavigation />}
+    <GuestRoute location={location} path="/" exact component={HomePage} />
     <GuestRoute location={location} path="/login" exact component={LoginPage} />
     <GuestRoute
       location={location}
@@ -26,4 +30,12 @@ const App = ({ location }) => (
   </div>
 );
 
-export default App;
+function mapStateToProps(state) {
+  return { isAuthenticated: !!state.user.isAuthenticated };
+}
+
+App.propTypes = {
+  isAuthenticated: PropTypes.bool.isRequired
+};
+
+export default connect(mapStateToProps, null)(App);

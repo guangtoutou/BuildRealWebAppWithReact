@@ -10,25 +10,14 @@ class HomePage extends React.Component {
   logout = () => this.props.logout();
 
   render() {
-    if (!this.props.isAuthenticated) {
-      return (
-        <div>
-          <h1>Home Page</h1>
-          <Link to="/login">Login</Link>
-          /
-          <Link to="/signup">Sign Up</Link>
-        </div>
-      );
-    } else {
-      return (
-        <div>
-          <h1>Home Page</h1>
-          <Button primary onClick={this.logout}>
-            Logout
-          </Button>
-        </div>
-      );
-    }
+    return (
+      <div>
+        <h1>Home Page</h1>
+        <Link to="/login">Login</Link>
+        /
+        <Link to="/signup">Sign Up</Link>
+      </div>
+    );
   }
 }
 

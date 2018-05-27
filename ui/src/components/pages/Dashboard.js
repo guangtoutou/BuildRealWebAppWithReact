@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import ConfirmMessage from '../messages/ConfirmEmailMessage';
+import AddBookCtA from '../cta/AddBookCtA';
 
 class Dashboard extends React.Component {
   render() {
@@ -9,13 +10,17 @@ class Dashboard extends React.Component {
       <div>
         {!this.props.isConfirmed && <ConfirmMessage />}
         <h1>Welcome to Dashboard</h1>
+        {!!this.props.books && <AddBookCtA />}
       </div>
     );
   }
 }
 
 function mapStateToProps(state) {
-  isConfirmed: !!state.user.isConfirmed;
+  return {
+    isConfirmed: !!state.user.isConfirmed,
+    books: state.books
+  };
 }
 
 Dashboard.propTypes = {
