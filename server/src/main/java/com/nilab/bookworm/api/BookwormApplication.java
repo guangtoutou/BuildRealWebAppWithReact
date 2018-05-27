@@ -14,13 +14,18 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Date;
+import java.util.Properties;
 
 @RestController
 @SpringBootApplication
@@ -39,6 +44,9 @@ public class BookwormApplication {
 
 	@Autowired
 	private TokenProvider tokenProvider;
+
+	@Autowired
+	public JavaMailSender emailSender;
 
 	public static void main(String[] args) {
 		SpringApplication.run(BookwormApplication.class, args);
@@ -62,4 +70,18 @@ public class BookwormApplication {
 		headers.add("Access-Control-Expose-Headers", "Authorization");
 		return new ResponseEntity<>(user, headers, HttpStatus.OK);
 	}
+
+	@GetMapping("/email")
+	public ResponseEntity<?> sendEmail(){
+		SimpleMailMessage message = new SimpleMailMessage();
+		message.setFrom("guangtoutou@yeah.net");
+		message.setTo("ni.ningning@gmail.com");
+		message.setSubject("this is a test");
+		message.setText("this is a test");
+		emailSender.send(message);
+
+		return new ResponseEntity(HttpStatus.OK);
+	}
+
+
 }
