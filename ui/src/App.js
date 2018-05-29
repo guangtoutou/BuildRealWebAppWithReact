@@ -9,6 +9,7 @@ import UserRoute from './components/routes/UserRoute';
 import GuestRoute from './components/routes/GuestRoute';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { NewBookPage } from './components/pages/NewBookPage';
 
 const App = ({ location, isAuthenticated }) => (
   <div className="ui container">
@@ -26,6 +27,13 @@ const App = ({ location, isAuthenticated }) => (
       path="/dashboard"
       exact
       component={Dashboard}
+    />
+
+    <UserRoute
+      location={location}
+      path="/books/new"
+      exact
+      component={NewBookPage}
     />
   </div>
 );
