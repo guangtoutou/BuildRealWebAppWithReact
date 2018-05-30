@@ -10,6 +10,7 @@ import thunk from 'redux-thunk';
 import rootReducer from './rootReducer';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import { userLoggedIn } from './actions/auth';
+import axios from 'axios';
 
 const store = createStore(
   rootReducer,
@@ -20,11 +21,15 @@ const store = createStore(
 );
 
 if (localStorage.bookwormJWT) {
-  var user = {
-    isAuthenticated: true,
-    token: localStorage.bookwormJWT
-  };
-  store.dispatch(userLoggedIn(user));
+  let token = localStorage.bookwormJWT;
+  if (token) {
+    var user = {
+      isAuthenticated: true,
+      token
+    };
+    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    store.dispatch(userLoggedIn(user));
+  }
 }
 
 ReactDOM.render(

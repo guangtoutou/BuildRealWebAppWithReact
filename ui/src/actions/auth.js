@@ -1,5 +1,6 @@
 import { USER_LOGGED_IN, USER_SIGNUP, USER_LOGOUT } from '../types';
 import api from '../api';
+import axios from 'axios';
 
 export const userLoggedIn = user => ({
   type: USER_LOGGED_IN,
@@ -32,5 +33,6 @@ export const signup = userForm => dispatch =>
 
 export const logout = () => dispatch => {
   localStorage.removeItem('bookwormJWT');
+  delete axios.defaults.headers.common.authorization;
   dispatch(userLogout());
 };

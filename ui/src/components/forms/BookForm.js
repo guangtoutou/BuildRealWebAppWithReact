@@ -109,7 +109,7 @@ class BookForm extends Component {
               </Grid.Column>
             </Grid.Row>
             <Grid.Row>
-              <Button primary>Save</Button>
+              <Button primary>Save it</Button>
             </Grid.Row>
           </Grid>
         </Form>

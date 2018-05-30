@@ -12,9 +12,6 @@ export default {
       }
 
       return axios.post('/login', form_data).then(res => {
-        axios.defaults.headers.common['Authorization'] = `Bearer ${
-          res.headers.authorization
-        }`;
         return res.headers.authorization;
       });
     },
