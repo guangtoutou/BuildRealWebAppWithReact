@@ -9,10 +9,11 @@ import dotenv from 'dotenv';
 import User from './models/User';
 import api from './api';
 
+dotenv.config();
 const app = express();
 app.use(cors());
 mongoose.Promise = Promise;
-mongoose.connect('mongodb://localhost/bookworm');
+mongoose.connect(process.env.MONGODB_URL);
 app.use(bodyParser.json()); // to support JSON-encoded bodies
 app.use(
   bodyParser.urlencoded({
@@ -26,7 +27,7 @@ app.post('/login', (req, res) => {
   User.findOne({ username: credentials.username }).then(user => {
     console.log(user);
     if (user && user.isValidPassword(credentials.password)) {
-      res.status(200).json(user);
+      res.status(200).json(user.toAuthJSON());
     } else {
       res.status(400).json('invalid credentials');
     }
