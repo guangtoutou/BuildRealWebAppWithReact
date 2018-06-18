@@ -5,13 +5,7 @@ axios.defaults.baseURL = 'http://localhost:8080';
 export default {
   user: {
     login: credentials => {
-      var form_data = new FormData();
-
-      for (var key in credentials) {
-        form_data.append(key, credentials[key]);
-      }
-
-      return axios.post('/login', form_data).then(res => {
+      return axios.post('/login', credentials).then(res => {
         return res.headers.authorization;
       });
     },
