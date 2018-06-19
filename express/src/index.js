@@ -8,6 +8,7 @@ import dotenv from 'dotenv';
 
 import User from './models/User';
 import api from './api';
+import parseErrors from './utils/parseError';
 
 dotenv.config();
 const app = express();
@@ -32,6 +33,16 @@ app.post('/login', (req, res) => {
       res.status(400).json('invalid credentials');
     }
   });
+});
+
+app.post('/signup', (req, res) => {
+  const { username, password } = req.body;
+  const user = new User({ username });
+  user.setPassword(password);
+  user
+    .save()
+    .then(user => res.json({ user: user.toAuthJSON() }))
+    .catch(err => res.status(400).json(parseErrors(err.errors)));
 });
 
 app.get('/', (req, res) => {
