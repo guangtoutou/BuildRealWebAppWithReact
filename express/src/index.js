@@ -5,6 +5,7 @@ import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 import Promise from 'bluebird';
 import dotenv from 'dotenv';
+import jwt from 'jsonwebtoken';
 
 import User from './models/User';
 import api from './api';
@@ -28,7 +29,16 @@ app.post('/login', (req, res) => {
   User.findOne({ username: credentials.username }).then(user => {
     console.log(user);
     if (user && user.isValidPassword(credentials.password)) {
-      res.status(200).json(user.toAuthJSON());
+      res
+        .status(200)
+        .header({
+          Authorization: jwt.sign(
+            { username: user.username },
+            process.env.JWT_SECRET
+          ),
+          'Access-Control-Expose-Headers': 'Authorization'
+        })
+        .json(user.toAuthJSON());
     } else {
       res.status(400).json('invalid credentials');
     }
@@ -41,7 +51,18 @@ app.post('/signup', (req, res) => {
   user.setPassword(password);
   user
     .save()
-    .then(user => res.json({ user: user.toAuthJSON() }))
+    .then(user =>
+      res
+        .status(200)
+        .header({
+          Authorization: jwt.sign(
+            { username: user.username },
+            process.env.JWT_SECRET
+          ),
+          'Access-Control-Expose-Headers': 'Authorization'
+        })
+        .json(user.toAuthJSON())
+    )
     .catch(err => res.status(400).json(parseErrors(err.errors)));
 });
 
