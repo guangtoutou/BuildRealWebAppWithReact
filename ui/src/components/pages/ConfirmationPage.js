@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Message, Icon } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { confirmToken } from '../../actions/auth';
+import { logout, confirmToken } from '../../actions/auth';
 
 class ConfirmationPage extends React.Component {
   state = {
@@ -12,6 +12,7 @@ class ConfirmationPage extends React.Component {
   };
 
   componentDidMount() {
+    this.props.logout();
     this.props
       .confirmToken(this.props.match.params.token)
       .then(() => this.setState({ loading: false, success: true }))
@@ -49,6 +50,7 @@ class ConfirmationPage extends React.Component {
               <Icon name="warning sign" />
               <Message.Content>
                 <Message.Header>Ooops. Invalid token it seems.</Message.Header>
+                <Link to="/">Back to Homepage</Link>
               </Message.Content>
             </Message>
           )}
@@ -66,4 +68,4 @@ ConfirmationPage.propTypes = {
   }).isRequired
 };
 
-export default connect(null, { confirmToken })(ConfirmationPage);
+export default connect(null, { logout, confirmToken })(ConfirmationPage);

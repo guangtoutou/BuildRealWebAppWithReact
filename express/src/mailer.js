@@ -19,9 +19,9 @@ const sendConfirmationEmail = user => {
     to: 'bar@example.com, baz@example.com', // list of receivers
     subject: 'Hello ✔', // Subject line
     text: `Hello ${user.username} ${user.generateConfirmationURL()} world?`, // plain text body
-    html: `<b>Hello,${
+    html: `<b>Hello ${
       user.username
-    } ${user.generateConfirmationURL()} world?</b>` // html body
+    }, Welcome to Bookworm. Please <a href='${user.generateConfirmationURL()}'>activate your account</a>` // html body
   };
 
   // send mail with defined transport object
