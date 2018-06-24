@@ -10,6 +10,7 @@ import jwt from 'jsonwebtoken';
 import User from './models/User';
 import api from './api';
 import parseErrors from './utils/parseError';
+import sendConfirmationEmail from './mailer';
 
 dotenv.config();
 const app = express();
@@ -27,18 +28,8 @@ app.use(
 app.post('/login', (req, res) => {
   const credentials = req.body;
   User.findOne({ username: credentials.username }).then(user => {
-    console.log(user);
     if (user && user.isValidPassword(credentials.password)) {
-      res
-        .status(200)
-        .header({
-          Authorization: jwt.sign(
-            { username: user.username },
-            process.env.JWT_SECRET
-          ),
-          'Access-Control-Expose-Headers': 'Authorization'
-        })
-        .json(user.toAuthJSON());
+      res.status(200).json(user.toAuthJSON());
     } else {
       res.status(400).json('invalid credentials');
     }
@@ -49,21 +40,31 @@ app.post('/signup', (req, res) => {
   const { username, password } = req.body;
   const user = new User({ username });
   user.setPassword(password);
+  user.setConfirmationToken();
   user
     .save()
-    .then(user =>
-      res
-        .status(200)
-        .header({
-          Authorization: jwt.sign(
-            { username: user.username },
-            process.env.JWT_SECRET
-          ),
-          'Access-Control-Expose-Headers': 'Authorization'
-        })
-        .json(user.toAuthJSON())
-    )
+    .then(user => {
+      res.status(200).json(user.toAuthJSON());
+      sendConfirmationEmail(user);
+    })
     .catch(err => res.status(400).json(parseErrors(err.errors)));
+});
+
+app.get('/confirm', (req, res) => {
+  const token = req.query.token;
+  const decoded = jwt.decode(token);
+  User.findOne({ username: decoded.username }).then(user => {
+    if (user && user.confirmed === false) {
+      user.confirmed = true;
+      user.save().then(user => {
+        res.status(200).json(user.toAuthJSON());
+      });
+    } else if (user && user.confirmed === true) {
+      res.status(400).json({ message: 'email already confirmed' });
+    } else {
+      res.status(400).json({ message: 'invalid credentials' });
+    }
+  });
 });
 
 app.get('/', (req, res) => {

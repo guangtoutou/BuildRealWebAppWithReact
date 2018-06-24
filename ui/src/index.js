@@ -11,6 +11,7 @@ import rootReducer from './rootReducer';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import { userLoggedIn } from './actions/auth';
 import axios from 'axios';
+import jwt from 'jsonwebtoken';
 
 const store = createStore(
   rootReducer,
@@ -23,10 +24,9 @@ const store = createStore(
 if (localStorage.bookwormJWT) {
   let token = localStorage.bookwormJWT;
   if (token) {
-    var user = {
-      isAuthenticated: true,
-      token
-    };
+    const user = jwt.decode(token);
+    user.isAuthenticated = true;
+    user.token = token;
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     store.dispatch(userLoggedIn(user));
   }

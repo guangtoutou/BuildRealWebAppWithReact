@@ -12,7 +12,8 @@ const schema = new mongoose.Schema(
       unique: true
     },
     password: { type: String, required: true },
-    confirmed: { type: Boolean, default: false }
+    confirmed: { type: Boolean, default: false },
+    confirmationToken: { type: String, default: '' }
   },
   { timestamp: true }
 );
@@ -21,18 +22,32 @@ schema.methods.isValidPassword = function isValidPassword(password) {
   return bcrypt.compareSync(password, this.password);
 };
 
+schema.methods.isValidToken = function isValidToken(token) {
+  return token === this.confirmationToken;
+};
+
 schema.methods.generateJWT = function generateJWT() {
-  return jwt.sign({ username: this.username }, process.env.JWT_SECRET);
+  return jwt.sign(
+    { username: this.username, isConfirmed: this.confirmed },
+    process.env.JWT_SECRET
+  );
 };
 
 schema.methods.setPassword = function setPassword(password) {
   this.password = bcrypt.hashSync(password, 10);
 };
 
+schema.methods.setConfirmationToken = function setConfirmationToken() {
+  this.confirmationToken = this.generateJWT();
+};
+schema.methods.generateConfirmationURL = function generateConfirmationURL() {
+  return `http://localhost:3000/confirmation/${this.confirmationToken}`;
+};
+
 schema.methods.toAuthJSON = function toAuthJSON() {
   return {
     username: this.username,
-    confirmed: this.confirmed,
+    isConfirmed: this.confirmed,
     token: this.generateJWT()
   };
 };

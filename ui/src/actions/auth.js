@@ -17,17 +17,16 @@ export const userLogout = () => ({
 });
 
 export const login = credentials => dispatch =>
-  api.user.login(credentials).then(token => {
-    localStorage.bookwormJWT = token;
-    var user = { token, isAuthenticated: true };
+  api.user.login(credentials).then(user => {
+    localStorage.bookwormJWT = user.token;
+    user.isAuthenticated = true;
     dispatch(userLoggedIn(user));
   });
 
 export const signup = userForm => dispatch =>
-  api.user.signup(userForm).then(res => {
-    var token = res.headers.authorization;
-    localStorage.bookwormJWT = token;
-    var user = { token, isAuthenticated: true };
+  api.user.signup(userForm).then(user => {
+    localStorage.bookwormJWT = user.token;
+    user.isAuthenticated = true;
     dispatch(userSignup(user));
   });
 
@@ -36,3 +35,10 @@ export const logout = () => dispatch => {
   delete axios.defaults.headers.common.authorization;
   dispatch(userLogout());
 };
+
+export const confirmToken = confirmationToken => dispatch =>
+  api.user.confirm(confirmationToken).then(user => {
+    localStorage.bookwormJWT = user.token;
+    user.isAuthenticated = true;
+    dispatch(userLoggedIn(user));
+  });

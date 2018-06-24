@@ -10,6 +10,7 @@ import GuestRoute from './components/routes/GuestRoute';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { NewBookPage } from './components/pages/NewBookPage';
+import ConfirmationPage from './components/pages/ConfirmationPage';
 
 const App = ({ location, isAuthenticated }) => (
   <div className="ui container">
@@ -28,7 +29,12 @@ const App = ({ location, isAuthenticated }) => (
       exact
       component={Dashboard}
     />
-
+    <Route
+      location={location}
+      path="/confirmation/:token"
+      exact
+      component={ConfirmationPage}
+    />
     <UserRoute
       location={location}
       path="/books/new"
