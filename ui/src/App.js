@@ -12,6 +12,7 @@ import PropTypes from 'prop-types';
 import { NewBookPage } from './components/pages/NewBookPage';
 import ConfirmationPage from './components/pages/ConfirmationPage';
 import ForgetPasswordPage from './components/pages/ForgetPasswordPage';
+import ResetPasswordPage from './components/pages/ResetPasswordPage';
 
 const App = ({ location, isAuthenticated }) => (
   <div className="ui container">
@@ -29,6 +30,12 @@ const App = ({ location, isAuthenticated }) => (
       path="/forget_password"
       exact
       component={ForgetPasswordPage}
+    />
+    <GuestRoute
+      location={location}
+      path="/reset_password/:token"
+      exact
+      component={ResetPasswordPage}
     />
     <UserRoute
       location={location}

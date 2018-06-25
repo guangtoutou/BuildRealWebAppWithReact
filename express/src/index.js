@@ -79,6 +79,34 @@ app.post('/forget_password', (req, res) => {
   });
 });
 
+app.post('/validate_token', (req, res) => {
+  jwt.verify(req.body.token, process.env.JWT_SECRET, err => {
+    if (err) {
+      res.status(401).json({});
+    } else {
+      res.json({});
+    }
+  });
+});
+
+app.post('/reset_password', (req, res) => {
+  jwt.verify(req.body.token, process.env.JWT_SECRET, (err, decoded) => {
+    if (err) {
+      res.status(401).json({});
+    } else {
+      User.findOne({ _id: decoded._id }).then(user => {
+        if (user) {
+          user.setPassword(req.body.password);
+          user.save();
+          res.json();
+        } else {
+          res.status(400).json();
+        }
+      });
+    }
+  });
+});
+
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });

@@ -44,3 +44,5 @@ export const confirmToken = confirmationToken => dispatch =>
   });
 
 export const forgetPassword = data => () => api.user.forgetPassword(data);
+export const validateToken = token => () => api.user.validateToken(token);
+export const resetPassword = data => () => api.user.resetPassword(data);

@@ -16,6 +16,7 @@ class ForgetPasswordPage extends React.Component {
     this.props
       .forgetPassword(data)
       .then(() => this.setState({ success: true }));
+
   render() {
     return (
       <div>
