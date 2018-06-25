@@ -13,6 +13,8 @@ export default {
       return axios
         .get('/confirm', { params: { token: token } })
         .then(res => res.data);
-    }
+    },
+    forgetPassword: data =>
+      axios.post('/forget_password', data).then(res => res.data)
   }
 };

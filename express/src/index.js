@@ -10,7 +10,7 @@ import jwt from 'jsonwebtoken';
 import User from './models/User';
 import api from './api';
 import parseErrors from './utils/parseError';
-import sendConfirmationEmail from './mailer';
+import { sendConfirmationEmail, sendResetPasswordEmail } from './mailer';
 
 dotenv.config();
 const app = express();
@@ -63,6 +63,18 @@ app.get('/confirm', (req, res) => {
       res.status(400).json({ message: 'email already confirmed' });
     } else {
       res.status(400).json({ message: 'invalid credentials' });
+    }
+  });
+});
+
+app.post('/forget_password', (req, res) => {
+  const username = req.body.username;
+  User.findOne({ username }).then(user => {
+    if (user) {
+      sendResetPasswordEmail(user);
+      res.status(200).json(user.toAuthJSON());
+    } else {
+      res.status(400).json({ message: 'invalid request' });
     }
   });
 });

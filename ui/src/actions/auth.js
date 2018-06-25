@@ -42,3 +42,5 @@ export const confirmToken = confirmationToken => dispatch =>
     user.isAuthenticated = true;
     dispatch(userLoggedIn(user));
   });
+
+export const forgetPassword = data => () => api.user.forgetPassword(data);

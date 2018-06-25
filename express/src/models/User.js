@@ -40,8 +40,23 @@ schema.methods.setPassword = function setPassword(password) {
 schema.methods.setConfirmationToken = function setConfirmationToken() {
   this.confirmationToken = this.generateJWT();
 };
+
 schema.methods.generateConfirmationURL = function generateConfirmationURL() {
   return `http://localhost:3000/confirmation/${this.confirmationToken}`;
+};
+
+schema.methods.setResetPasswordToken = function setResetPasswordToken() {
+  return jwt.sign(
+    {
+      _id: this._id
+    },
+    process.env.JWT_SECRET,
+    { expiresIn: '1h' }
+  );
+};
+
+schema.methods.generateResetPasswordURL = function generateResetPasswordURL() {
+  return `http://localhost:3000/reset_password/${this.setResetPasswordToken()}`;
 };
 
 schema.methods.toAuthJSON = function toAuthJSON() {

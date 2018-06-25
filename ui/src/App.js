@@ -11,6 +11,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { NewBookPage } from './components/pages/NewBookPage';
 import ConfirmationPage from './components/pages/ConfirmationPage';
+import ForgetPasswordPage from './components/pages/ForgetPasswordPage';
 
 const App = ({ location, isAuthenticated }) => (
   <div className="ui container">
@@ -22,6 +23,12 @@ const App = ({ location, isAuthenticated }) => (
       path="/signup"
       exact
       component={SignupPage}
+    />
+    <GuestRoute
+      location={location}
+      path="/forget_password"
+      exact
+      component={ForgetPasswordPage}
     />
     <UserRoute
       location={location}
