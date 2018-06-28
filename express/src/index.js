@@ -11,12 +11,15 @@ import User from './models/User';
 import api from './api';
 import parseErrors from './utils/parseError';
 import { sendConfirmationEmail, sendResetPasswordEmail } from './mailer';
+import books from './routes/books';
 
 dotenv.config();
 const app = express();
 app.use(cors());
+
 mongoose.Promise = Promise;
 mongoose.connect(process.env.MONGODB_URL);
+
 app.use(bodyParser.json()); // to support JSON-encoded bodies
 app.use(
   bodyParser.urlencoded({
@@ -24,6 +27,8 @@ app.use(
     extended: false
   })
 );
+
+app.use('/books', books);
 
 app.post('/login', (req, res) => {
   const credentials = req.body;

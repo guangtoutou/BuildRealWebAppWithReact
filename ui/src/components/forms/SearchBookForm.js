@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Form, Dropdown } from 'semantic-ui-react';
 import axios from 'axios';
 
-axios.defaults.baseURL = 'http://localhost:8080';
+//axios.defaults.baseURL = 'http://localhost:8080';
 
 export class SearchBookForm extends Component {
   state = {
