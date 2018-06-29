@@ -1,6 +1,7 @@
 import { USER_LOGGED_IN, USER_SIGNUP, USER_LOGOUT } from '../types';
 import api from '../api';
 import axios from 'axios';
+import setAuthorizationHeader from '../uitls/setAuthorizationHeader';
 
 export const userLoggedIn = user => ({
   type: USER_LOGGED_IN,
@@ -19,6 +20,7 @@ export const userLogout = () => ({
 export const login = credentials => dispatch =>
   api.user.login(credentials).then(user => {
     localStorage.bookwormJWT = user.token;
+    setAuthorizationHeader(localStorage.bookwormJWT);
     user.isAuthenticated = true;
     dispatch(userLoggedIn(user));
   });
@@ -26,13 +28,14 @@ export const login = credentials => dispatch =>
 export const signup = userForm => dispatch =>
   api.user.signup(userForm).then(user => {
     localStorage.bookwormJWT = user.token;
+    setAuthorizationHeader(localStorage.bookwormJWT);
     user.isAuthenticated = true;
     dispatch(userSignup(user));
   });
 
 export const logout = () => dispatch => {
   localStorage.removeItem('bookwormJWT');
-  delete axios.defaults.headers.common.authorization;
+  setAuthorizationHeader();
   dispatch(userLogout());
 };
 
