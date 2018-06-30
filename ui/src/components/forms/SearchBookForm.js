@@ -2,9 +2,7 @@ import React, { Component } from 'react';
 import { Form, Dropdown } from 'semantic-ui-react';
 import axios from 'axios';
 
-//axios.defaults.baseURL = 'http://localhost:8080';
-
-export class SearchBookForm extends Component {
+class SearchBookForm extends Component {
   state = {
     query: '',
     loading: false,
@@ -15,7 +13,7 @@ export class SearchBookForm extends Component {
   onSearchChange = (e, data) => {
     clearTimeout(this.timer);
     this.setState({
-      query: data
+      query: data.searchQuery
     });
     this.timer = setTimeout(this.fecthoptions, 1000);
   };
@@ -24,7 +22,7 @@ export class SearchBookForm extends Component {
     if (!this.state.query) return;
     this.setState({ loading: true });
     axios
-      .get('/books/search')
+      .get(`/books/search?q=${this.state.query}`)
       .then(res => res.data)
       .then(books => {
         const options = [];
@@ -42,6 +40,7 @@ export class SearchBookForm extends Component {
   };
 
   onChange = (e, data) => {
+    this.setState({ query: data.value });
     this.props.onBookChange(this.state.books[data.value]);
   };
 
