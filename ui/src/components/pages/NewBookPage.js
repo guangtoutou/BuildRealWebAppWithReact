@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import SearchBookForm from '../forms/SearchBookForm';
 import { Segment } from 'semantic-ui-react';
 import BookForm from '../forms/BookForm';
+import axios from 'axios';
 
 export class NewBookPage extends Component {
   state = {
@@ -10,6 +11,13 @@ export class NewBookPage extends Component {
 
   onBookChange = data => {
     this.setState({ book: data });
+    axios
+      .get(`/books/fetchPages?q=${data.goodreadsId}`)
+      .then(res => res.data)
+      .then(pages => {
+        console.log(pages);
+        this.setState({ book: { ...data, pages: pages } });
+      });
   };
 
   render() {

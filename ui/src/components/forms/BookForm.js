@@ -96,9 +96,10 @@ class BookForm extends Component {
                   <input
                     type="text"
                     id="pages"
+                    disabled={data.pages === undefined}
                     name="pages"
                     placeholder="Book pages"
-                    value={data.pages}
+                    value={data.pages ? data.pages : 'loading'}
                     onChange={this.onChange}
                   />
                   {errors.pages && <InlineError text={errors.pages} />}

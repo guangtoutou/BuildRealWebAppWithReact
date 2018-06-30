@@ -28,22 +28,23 @@ router.get('/search', (req, res) => {
         );
       });
     });
-  // res.status(200).json([
-  //   {
-  //     goodreadsId: 1,
-  //     title: '1984',
-  //     authors: 'Orwell',
-  //     covers: 'https://images.gr-assets.com/books/1348990566l/5470.jpg',
-  //     pages: 198
-  //   },
-  //   {
-  //     goodreadsId: 2,
-  //     title: 'Three Men in a Boat',
-  //     authors: 'Jerome K. Jerome',
-  //     covers: 'https://images.gr-assets.com/books/1392791656l/4921.jpg',
-  //     pages: 256
-  //   }
-  // ]);
+});
+
+router.get('/fetchPages', (req, res) => {
+  request
+    .get(
+      `https://www.goodreads.com/book/show.xml?key=${
+        process.env.GOODREADS_KEY
+      }&id=${req.query.q}`
+    )
+    .then(result => {
+      parseString(result, (err, goodreadsResult) => {
+        const page_num = goodreadsResult.GoodreadsResponse.book[0].num_pages[0];
+        const pages = page_num ? parseInt(page_num, 10) : 0;
+
+        res.status(200).json(pages);
+      });
+    });
 });
 
 export default router;
