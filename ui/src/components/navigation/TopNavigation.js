@@ -6,12 +6,17 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { logout } from '../../actions/auth';
 
-const TopNavigation = ({ logout }) => {
+const TopNavigation = ({ books, logout }) => {
   return (
     <Menu secondary pointing>
       <Menu.Item as={Link} to="/dashboard">
         Dashboard
       </Menu.Item>
+      {books.length > 0 && (
+        <Menu.Item as={Link} to="/books/new">
+          Add new book
+        </Menu.Item>
+      )}
 
       <Menu.Menu position="right">
         <Dropdown
@@ -26,8 +31,14 @@ const TopNavigation = ({ logout }) => {
   );
 };
 
+function mapStateToProps(state) {
+  return {
+    books: state.books
+  };
+}
+
 TopNavigation.propTypes = {
   logout: PropTypes.func.isRequired
 };
 
-export default connect(null, { logout })(TopNavigation);
+export default connect(mapStateToProps, { logout })(TopNavigation);

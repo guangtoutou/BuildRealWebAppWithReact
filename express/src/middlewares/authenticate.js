@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import User from '../models/User';
 
 const authenticate = (req, res, next) => {
   const header = req.headers.authorization;
@@ -10,7 +11,14 @@ const authenticate = (req, res, next) => {
       if (err) {
         res.status(401).json('invalid credentials');
       } else {
-        next();
+        User.findOne({ username: decoded.username }).then(user => {
+          if (user) {
+            req.currentUser = user;
+            next();
+          } else {
+            res.status(401).json('invalid credentials');
+          }
+        });
       }
     });
   } else {

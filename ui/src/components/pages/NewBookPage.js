@@ -20,13 +20,25 @@ export class NewBookPage extends Component {
       });
   };
 
+  onSubmit = data =>
+    axios
+      .post('/books/', data)
+      .then(res => res.data)
+      .then(pages => {
+        console.log(pages);
+        this.setState({ book: { ...data, pages: pages } });
+      })
+      .then(() => this.props.history.push('/dashboard'));
+
   render() {
     console.log(this.state.book);
     return (
       <Segment>
         <h1>Add new book to your collection</h1>
         <SearchBookForm onBookChange={this.onBookChange} />
-        {this.state.book && <BookForm book={this.state.book} />}
+        {this.state.book && (
+          <BookForm book={this.state.book} submit={this.onSubmit} />
+        )}
       </Segment>
     );
   }

@@ -10,7 +10,8 @@ class BookForm extends Component {
       title: this.props.book.title,
       authors: this.props.book.authors,
       covers: this.props.book.covers,
-      pages: this.props.book.pages
+      pages: this.props.book.pages,
+      goodreadsId: this.props.book.goodreadsId
     },
     loading: false,
     errors: {}
@@ -22,7 +23,8 @@ class BookForm extends Component {
         title: props.book.title,
         authors: props.book.authors,
         covers: props.book.covers,
-        pages: props.book.pages
+        pages: props.book.pages,
+        goodreadsId: this.props.book.goodreadsId
       },
       loading: false,
       errors: {}
@@ -39,18 +41,14 @@ class BookForm extends Component {
     this.setState({ errors });
     if (Object.keys(errors).length === 0) {
       this.setState({ loading: true });
-      this.props.submit(this.state.data).catch(err =>
-        this.setState({
-          errors: { message: err.response.data },
-          loading: false
-        })
-      );
+      this.props.submit(this.state.data);
     }
   };
 
   validate = data => {
     const errors = {};
     if (Validator.isEmpty(data.title)) errors.title = "title can't be empty";
+    return errors;
   };
 
   render() {
